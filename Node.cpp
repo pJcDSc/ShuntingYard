@@ -32,6 +32,16 @@ Node* Node::getRight() {
   return right;
 }
 
+//Set Left
+void Node::setLeft(Node* n) {
+  left = n;
+}
+
+//Set Right
+void Node::setRight(Node* n) {
+  right = n;
+}
+
 //Destructor
 Node::~Node() {
   //Nothing here for now

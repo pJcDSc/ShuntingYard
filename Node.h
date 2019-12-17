@@ -26,6 +26,12 @@ class Node {
   //Get right
   Node* getRight();
 
+  //Set left
+  void setLeft(Node*);
+
+  //Set right
+  void setRight(Node*);
+
   //Destructor
   ~Node();
 
@@ -37,3 +43,4 @@ class Node {
 
 };
 
+#endif
