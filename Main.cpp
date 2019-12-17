@@ -11,20 +11,20 @@ Shunting Yard algorithm Demonstration
 
 using namespace std;
 
-vector<char*>* getPostfix(vector<char*>*);
+vector<char*>* getPostfix(char*);
 vector<char*>* split(char*, char);
-void push(Node*, char*);
+void push(Node**, char*);
 void pop(Node*);
 //int getPrecedence(char*);
 
 int main() {
   cout << "Welcome to Shunting Yard demonstration" << endl;
-  cout << "Enter infix expression. Please only use +, -, *, /, (, ), ^, and integers" << endl;
+  cout << "Enter a space-seperated infix expression. Please only use +, -, *, /, (, ), ^, and integers" << endl;
 
-  char* expression;
+  char* expression = new char();
   cin.getline(expression, 150);
   
-  vector<char*>* postfix = getPostfix(split(expression, ' '));
+  vector<char*>* postfix = getPostfix(expression);
 }
 
 vector<char*>* split(char* c, char delim) {
@@ -44,28 +44,31 @@ vector<char*>* split(char* c, char delim) {
   return v;
 }
 
-vector<char*>* getPostFix(vector<char*>* in) {
+vector<char*>* getPostfix(char* exp) {
+  vector<char*>* in = split(exp, ' ');
   vector<char*>* out = new vector<char*>;
   Node* head = NULL; 
   
   vector<char*>::iterator it = in -> begin();
   while(it != in -> end()) {
-    
+    ++it;
   }
   return out;
 }
 
-void push(Node* &head, char* c) {
-  if (head == NULL) {
-    head = new Node(c);
+void push(Node** head, char* c) {
+  if (*head == NULL) {
+    Node* temp = new Node(c);
+    head = &temp;
     return;
   }
-  if (head -> getRight() == NULL) {
+  if ((*head) -> getRight() == NULL) {
     Node* newNode = new Node(c);
-    head -> setRight(newNode);
+    (*head) -> setRight(newNode);
     return;
   }
-  push(head -> getRight(), c);
+  Node* temp = (*head) -> getRight();
+  push(&temp, c);
 }
 
 void pop(Node*) {
