@@ -29,11 +29,11 @@ int main() {
   cin.getline(expression, 150);
   vector<char*>* postfix = getPostfix(expression);
   vector<char*>::iterator it = postfix -> begin();
-  /*while (it != postfix -> end()) {
+  while (it != postfix -> end()) {
     cout << *it << " ";
     ++it;
   }
-  cout << endl;*/
+  cout << endl;
 }
 
 vector<char*>* split(char* c, char delim) {
@@ -112,51 +112,53 @@ void push(Node* &head, char* c) {
     head = temp;
     return;
   }
-  if (head -> getRight() == NULL) {
+  if (head -> getNext() == NULL) {
     Node* newNode = new Node(c);
-    head -> setRight(newNode);
+    head -> setNext(newNode);
     return;
   }
-  Node* temp = head -> getRight();
+  Node* temp = head -> getNext();
   push(temp, c);
 }
 
 char* pop(Node* &head) {
   if (head == NULL) return NULL;
-  if (head -> getRight() == NULL) {
+  if (head -> getNext() == NULL) {
     char* ret = head -> getValue();
     Node* temp = head;
     head = NULL;
     delete temp;
     return ret;
   }
-  if (head -> getRight() -> getRight() == NULL) {
-    char* ret = head -> getRight() -> getValue();
-    delete head -> getRight();
-    head -> setRight(NULL);
+  if (head -> getNext() -> getNext() == NULL) {
+    char* ret = head -> getNext() -> getValue();
+    delete head -> getNext();
+    head -> setNext(NULL);
     return ret;
   }
-  Node* temp = head -> getRight();
+  Node* temp = head -> getNext();
   return pop(temp);
 }
 
 char* peek(Node* head) {
   if (head == NULL) return NULL;
-  if (head -> getRight() == NULL) {
+  if (head -> getNext() == NULL) {
     char* ret = head -> getValue();
     return ret;
   }
-  return peek(head -> getRight());
+  return peek(head -> getNext());
 }
 
-Node* getTree(vector<char*>* v) {
+Node* getOBTree(vector<char*>* v) {
   Node* head = NULL; //Stack head
 
   vector<char*>::iterator it = v -> begin();
   while (it != v -> end()) {
     if (isnumber(*it)) {
-      
+    }
     
     ++it;
   }
+
+  return head;
 }
