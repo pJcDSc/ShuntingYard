@@ -15,6 +15,7 @@ Node::Node(char* c) {
   value = c;
   right = NULL;
   left = NULL;
+  next = NULL;
 }
 
 //Get Value
@@ -32,6 +33,11 @@ Node* Node::getRight() {
   return right;
 }
 
+//Get Next
+Node* Node::getNext() {
+  return next;
+}
+
 //Set Left
 void Node::setLeft(Node* n) {
   left = n;
@@ -40,6 +46,11 @@ void Node::setLeft(Node* n) {
 //Set Right
 void Node::setRight(Node* n) {
   right = n;
+}
+
+//Set Next
+void Node::setNext(Node* n) {
+  next = n;
 }
 
 //Destructor
