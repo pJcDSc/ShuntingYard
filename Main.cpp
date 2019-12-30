@@ -22,6 +22,8 @@ bool isLeftAsc(char*);
 bool isnumber(char*);
 Node* getTree(vector<char*>*);
 void printInfix(Node*);
+void printPostfix(Node*);
+void printPrefix(Node*);
 
 int main() {
   cout << "Welcome to Shunting Yard demonstration" << endl;
@@ -45,7 +47,32 @@ int main() {
   cout << "Getting expression tree..." << endl;
   Node* expHead = getTree(postfix);
   cout << "Done" << endl;
-  printInfix(expHead);
+  
+  cout << "Print infix(i), postfix(p), or prefix(pr)?" << endl;
+  char* mode = new char();
+  cin.getline(mode, 10);
+  bool accept = false;
+  while(!accept) {
+    if (strcmp(mode, "i") == 0 || strcmp(mode, "p") == 0 || strcmp(mode, "pr") == 0) {
+      accept = true;
+    }
+    else {
+      cout << "Please enter either \"i\", \"p\", or \"pr\"." << endl;
+    }
+  }
+  if (strcmp(mode, "i") == 0) {
+    cout << "Getting infix expression..." << endl;
+    printInfix(expHead);
+  }
+  if (strcmp(mode, "p") == 0) {
+    cout << "Getting postfix expression..." << endl;
+    printPostfix(expHead);
+  }
+  if (strcmp(mode, "pr") == 0) {
+    cout << "Getting prefix expression..." << endl;
+    printPrefix(expHead);
+  }
+  cout << endl;
 }
 
 vector<char*>* split(char* c, char delim) {
@@ -185,7 +212,7 @@ Node* getTree(vector<char*>* v) {
     ++it;
   }
   Node* ret = peekNode(head);
-  pop(head);
+  pop(head, false);
 
   return ret;
 }
@@ -194,9 +221,24 @@ void printInfix(Node* head) {
   if (head) {
     if (!isnumber(head -> getValue())) cout << "(";
     printInfix(head -> getLeft());
-    cout << head -> getValue() << "";
+    cout << head -> getValue();
     printInfix(head -> getRight());
     if (!isnumber(head -> getValue())) cout << ")";
   }
 }
 
+void printPrefix(Node* head) {
+  if (head) {
+    cout << head -> getValue() << " ";
+    printPrefix(head -> getLeft());
+    printPrefix(head -> getRight());
+  }
+}
+
+void printPostfix(Node* head) {
+  if (head) {
+    printPostfix(head -> getLeft());
+    printPostfix(head -> getRight());
+    cout << head -> getValue() << " ";
+  }
+}
