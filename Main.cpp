@@ -47,32 +47,53 @@ int main() {
   cout << "Getting expression tree..." << endl;
   Node* expHead = getTree(postfix);
   cout << "Done" << endl;
-  
-  cout << "Print infix(i), postfix(p), or prefix(pr)?" << endl;
-  char* mode = new char();
-  cin.getline(mode, 10);
-  bool accept = false;
-  while(!accept) {
-    if (strcmp(mode, "i") == 0 || strcmp(mode, "p") == 0 || strcmp(mode, "pr") == 0) {
+
+  bool cont = true;
+  while (cont) {
+    cout << "Print infix(i), postfix(p), or prefix(pr)?" << endl;
+    char* mode = new char();
+    cin.getline(mode, 10);
+    bool accept = false;
+    while(!accept) {
+      if (strcmp(mode, "i") == 0 || strcmp(mode, "p") == 0 || strcmp(mode, "pr") == 0) {
+	accept = true;
+      }
+      else {
+	cout << "Please enter either \"i\", \"p\", or \"pr\"." << endl;
+      }
+    }
+    if (strcmp(mode, "i") == 0) {
+      cout << "Getting infix expression..." << endl;
+      printInfix(expHead);
+    }
+    if (strcmp(mode, "p") == 0) {
+      cout << "Getting postfix expression..." << endl;
+      printPostfix(expHead);
+    }
+    if (strcmp(mode, "pr") == 0) {
+      cout << "Getting prefix expression..." << endl;
+      printPrefix(expHead);
+    }
+    cout << endl;
+
+    cout << "Output another expression? (y/n)" << endl;
+    accept = false;
+    char dec;
+    while (!accept) {
+      cin >> dec;
+      cin.clear();
+      cin.ignore();
       accept = true;
+      if (dec == 'n') {
+	cont = false;
+      }
+      else if (dec != 'y') {
+	accept = false;
+	cout << "Please enter either \"y\" or \"n\"" << endl;
+      }
     }
-    else {
-      cout << "Please enter either \"i\", \"p\", or \"pr\"." << endl;
-    }
   }
-  if (strcmp(mode, "i") == 0) {
-    cout << "Getting infix expression..." << endl;
-    printInfix(expHead);
-  }
-  if (strcmp(mode, "p") == 0) {
-    cout << "Getting postfix expression..." << endl;
-    printPostfix(expHead);
-  }
-  if (strcmp(mode, "pr") == 0) {
-    cout << "Getting prefix expression..." << endl;
-    printPrefix(expHead);
-  }
-  cout << endl;
+  cout << "Thank you for using Shunting Yard demonstration" << endl;
 }
 
 vector<char*>* split(char* c, char delim) {
