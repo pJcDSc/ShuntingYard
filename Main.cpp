@@ -11,7 +11,9 @@ Shunting Yard algorithm Demonstration
 
 using namespace std;
 
-vector<char*>* getPostfix(char*);
+Node* getPostfix(char*);
+void enqueue(Node*&, char*);
+char* dequeue(Node*&);
 vector<char*>* split(char*, char);
 void push(Node*&, Node*);
 char* pop(Node*&, bool del = true);
@@ -20,7 +22,7 @@ Node* peekNode(Node*);
 int getPrecedence(char*);
 bool isLeftAsc(char*);
 bool isnumber(char*);
-Node* getTree(vector<char*>*);
+Node* getTree(Node*);
 void printInfix(Node*);
 void printPostfix(Node*);
 void printPrefix(Node*);
@@ -35,7 +37,7 @@ int main() {
   
   //Get postfix and store in char* vector
   cout << "Getting postfix..." << endl;
-  vector<char*>* postfix = getPostfix(expression);
+  Node* postfix = getPostfix(expression);
   cout << "Done" << endl;
 
   //Get expression tree and store head node
@@ -129,19 +131,19 @@ vector<char*>* split(char* c, char delim) {
  * Uses Dijkstra's Shunting Yard algorithm to parse infix, cannot handle unary operators
  * Accepted operators: +, -, *, /, ^, (, )
  */
-vector<char*>* getPostfix(char* exp) {
+Node* getPostfix(char* exp) {
   vector<char*>* in = split(exp, ' ');
   //Ouptut vector
-  vector<char*>* out = new vector<char*>;
+  Node* out = NULL;
   //Stack head
   Node* head = NULL; 
-
+  
   //Loop through vector
   vector<char*>::iterator it = in -> begin();
   while(it != in -> end()) {
     char* c = *it;
     //If c is a number just push to output
-    if (isnumber(c)) out -> push_back(c);
+    if (isnumber(c)) enqueue(out, c);
     //If c is a left paren push it to stack
     else if (strcmp(c, "(") == 0) {
       push(head, new Node(*it));
@@ -150,7 +152,7 @@ vector<char*>* getPostfix(char* exp) {
     else if (strcmp(c, ")") == 0) {
       char* op = pop(head);
       while (strcmp(op, "(") != 0) {
-	out -> push_back(op);
+	enqueue(out, op);
 	op = pop(head);
       }
     }
@@ -160,7 +162,7 @@ vector<char*>* getPostfix(char* exp) {
       int prec = getPrecedence(c);
       char* next = peek(head);
       while (next && strcmp(next, "(") != 0 && (getPrecedence(next) > prec || getPrecedence(next) == prec && isLeftAsc(next))) {
-	out -> push_back(pop(head));
+	enqueue(out, pop(head));
 	next = peek(head);
       }
       push(head, new Node(c));
@@ -169,7 +171,7 @@ vector<char*>* getPostfix(char* exp) {
   }
   //Push the rest of the stack into output in order
   while (peek(head) != NULL) {
-    out -> push_back(pop(head));
+    enqueue(out, pop(head));
   }
   return out;
 }
@@ -194,6 +196,37 @@ bool isnumber(char* c) {
     if (!isdigit(c[i])) return false;
   }
   return true;
+}
+
+//Enqueue function for shunting yard
+void enqueue(Node* &head, char* c) {
+  //Empty List
+  if (head == NULL) {
+    head = new Node(c);
+    return;
+  }
+  //Last node
+  if (head -> getNext() == NULL) {
+    head -> setNext(new Node(c));
+    return;
+  }
+  //Recurse on next node
+  Node* temp = head -> getNext();
+  enqueue(temp, c);
+}
+
+//Dequeue function for queue
+char* dequeue(Node* &head) {
+  //Empty List
+  if (head == NULL) {
+    return NULL;
+  }
+  //Otherwise, get temp, return value of temp, set head to next
+  Node* temp = head;
+  head = head -> getNext();
+  char* value = temp -> getValue();
+  delete temp;
+  return value;
 }
 
 //recursive Push function for push into stack
@@ -263,27 +296,27 @@ Node* peekNode(Node* head) {
 }
 
 //Returns exptree given a postfix vector<char*>
-Node* getTree(vector<char*>* v) {
+Node* getTree(Node* post) {
   //Stack head
   Node* head = NULL;
 
   //loop through v
-  vector<char*>::iterator it = v -> begin();
-  while (it != v -> end()) {
+  char* next = dequeue(post);
+  while (next) {
     //if number push to stack
-    if (isnumber(*it)) {
-      push(head, new Node(*it));
+    if (isnumber(next)) {
+      push(head, new Node(next));
     }
     //otherwise (operator) make new node, pop twice, set first to right and second to left, push
     else {
-      Node* temp = new Node(*it);
+      Node* temp = new Node(next);
       temp -> setRight(peekNode(head));
       pop(head, false);
       temp -> setLeft(peekNode(head));
       pop(head, false);
       push(head, temp);
     }
-    ++it;
+    next = dequeue(post);
   }
   //Final node in stack is head node
   Node* ret = peekNode(head);
